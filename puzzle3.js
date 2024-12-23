@@ -9,36 +9,31 @@ function readInput() {
 }
 
 const input = readInput();
-
-
+let filteredStringToArray = [];
 function filterMulti(input) {
-    filteredStringToArray = input.match(/mul\((\d+),(\d+)\)/ig);
+    filteredStringToArray = input.match(/mul\((\d+),(\d+)\)|do\(\)|don't\(\)/ig);
     //console.log(filteredStringToArray);
     return filteredStringToArray;
 }
-
-let mulArray = filterMulti(input);
-let cleanArray = cleanAndTotal(mulArray);
-function cleanAndTotal(mulArray) {
-    let totals = [];
-    for (const item of mulArray) {
-    let cleanItem = item.replace('mul(', '').replace(')', '');
-    let multiplyThese = cleanItem.split(',');
-    let total = multiplyThese[0] * multiplyThese[1];
-    totals.push(total);
-    //console.log(total);
-    
-    
-}   
-return totals;
-}   
-function addEverything(totals) {
-    let total = 0;
-    for (const item of totals) {
-        total += item;
-    }
-    console.log(total);
-    return total;
+let moveToArray = true;
+function dosAndDonts(filteredStringToArray) {
+    let partTwoArray=[];
+    for (let i = 0; i < filteredStringToArray.length; i++) {
+       
+        if (/mul\((\d+),(\d+)\)/ig.test(filteredStringToArray[i]) && moveToArray) {               
+            let cleanItem = filteredStringToArray[i].replace('mul(', '').replace(')', '');       
+            let multiplyThese = cleanItem.split(',');       
+            let product = multiplyThese[0] * multiplyThese[1];       
+            partTwoArray.push(product);            
+        } else if (/do\(\)/ig.test(filteredStringToArray[i])) {
+            moveToArray = true;            
+        } else if (/don't\(\)/ig.test(filteredStringToArray[i])) {
+            moveToArray = false;            
+        }
+        }        
+         const sum = partTwoArray.reduce((acc, num) => acc + num, 0);
+    console.log(sum);
+    return sum;
+  
 }
-
-addEverything(cleanArray);
+dosAndDonts(filterMulti(input));
